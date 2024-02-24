@@ -25,7 +25,6 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
   get lieuId => null;
 
   Future<void> getPlaces(int? id) async {
-    print("Get Places by Id ${id}");
     try {
       var response = await http.get(Uri.parse(
           'http://192.168.1.68/tourisme_journey_api/villes/getVilleById.php?id=$id'));
@@ -186,7 +185,7 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
                                   child: Image.asset(
                                       "assets/images/parlementaire.jpg"),
                                 ),
-                                Text("Hotel Parlementaire"),
+                                Text("${ListHotels![index].nom_hotel}"),
                               ],
                             ),
                           );
@@ -200,29 +199,36 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: EdgeInsets.only(top: 100, left: 20),
-                      height: 250,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        image: const DecorationImage(
-                            image: AssetImage("assets/images/heliacparc.jpg"),
-                            fit: BoxFit.cover),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Bienvenu(e) à Yakro",
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                    lieu == null
+                        ? CircularProgressIndicator()
+                        : Container(
+                            padding: EdgeInsets.only(top: 100, left: 20),
+                            height: 250,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                  image: AssetImage("assets/images/yakro.jpg"),
+                                  fit: BoxFit.cover),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${lieu!.nom}",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                                Text(
+                                  "${lieu!.description}",
+                                  maxLines: 3,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              ],
+                            ),
                           ),
-                          Text(
-                            "Découvrez les activités culturelles",
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                        ],
-                      ),
-                    ),
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -253,105 +259,32 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
                         ],
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.5,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        child: Image.asset(
-                                            "assets/images/hotelpresident.jpg"),
-                                      ),
-                                      Text("Hotel President")
-                                    ],
-                                  ),
+                    SizedBox(
+                      height: 500,
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // number of items in each row
+                          mainAxisSpacing: 2.0, // spacing between rows
+                          crossAxisSpacing: 2.0, // spacing between columns
+                        ),
+
+                        itemCount:
+                            ListActivites!.length, // total number of items
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: EdgeInsets.all(10),
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            child: Column(
+                              children: [
+                                Container(
+                                  child: Image.asset(
+                                      "assets/images/parlementaire.jpg"),
                                 ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      child: Image.asset(
-                                          "assets/images/parlementaire.jpg"),
-                                    ),
-                                    Text("Hotel Parlementaire")
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      child: Image.asset(
-                                          "assets/images/hotellerocher.jpg"),
-                                    ),
-                                    Text("Hotel le Rocher")
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      child: Image.asset(
-                                          "assets/images/onyxhotel.png"),
-                                    ),
-                                    Text("Onyx Hotel")
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      child: Image.asset(
-                                          "assets/images/hotelhpresort.jpg"),
-                                    ),
-                                    Text("Hotel HP Presort")
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      child: Image.asset(
-                                          "assets/images/residencebeach.jpg"),
-                                    ),
-                                    Text("Residence Beach")
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                Text("${ListActivites![index].nom_activite}"),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

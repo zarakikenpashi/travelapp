@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'home.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -8,13 +13,45 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController nomController = TextEditingController();
+  TextEditingController prenomController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmpasswordController = TextEditingController();
+
+  Future<void> onSingnUp() async {
+    print("Top");
+    final url = Uri.parse(
+        'http://192.168.1.74/tourisme_journey_api/Connexion/register.php'); //Repclace Your Endpoint
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({
+      "firstName": nomController.text,
+      "lastName": prenomController.text,
+      "phone": phoneController.text,
+      "email": emailController.text,
+      "password": passwordController.text
+    });
+
+    var response = await http.post(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      _formKey.currentState!.reset();
+      toastification.show(
+        context: context,
+        title: Text('Féllicitation ! votre compte a été bien enregistré'),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+    } else {
+      print('Hata: ${response.statusCode}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
           child: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -26,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(70),
+              padding: const EdgeInsets.all(50),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,13 +78,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   const Text(
-                    "Sign up",
+                    "Inscription",
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                 ],
               ),
             ),
             Form(
+              key: _formKey,
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: const BoxDecoration(
@@ -57,49 +95,106 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     const Center(
                       child: Text(
-                        "Join us",
+                        "Nous rejoindre",
                         style: TextStyle(
                           fontSize: 30,
                         ),
                       ),
                     ),
-                    const TextField(
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer votre nom';
+                        }
+                        return null;
+                      },
+                      controller: nomController,
                       decoration: InputDecoration(
-                        labelText: "Username",
+                        labelText: "Nom",
                       ),
                     ),
-                    const TextField(
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer votre prénoms';
+                        }
+                        return null;
+                      },
+                      controller: prenomController,
+                      decoration: InputDecoration(
+                        labelText: "Prenoms",
+                      ),
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer votre email';
+                        }
+                        return null;
+                      },
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        labelText: "Adresse email",
+                      ),
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer votre numero';
+                        }
+                        return null;
+                      },
+                      controller: phoneController,
+                      decoration: InputDecoration(
+                        labelText: "Telephone",
+                      ),
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer votre mot de passe';
+                        }
+                        return null;
+                      },
+                      controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
-                        labelText: "Password",
+                        labelText: "Mot de passe",
                       ),
                     ),
-                    const TextField(
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer repeter le mot de passe';
+                        }
+                        return null;
+                      },
+                      controller: confirmpasswordController,
                       obscureText: true,
                       decoration: InputDecoration(
-                        labelText: "Repeat Password",
-                      ),
-                    ),
-                    const TextField(
-                      decoration: InputDecoration(
-                        labelText: "Email Adress",
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Agree to our"),
-                          Text("Terms and Stuff"),
-                        ],
+                        labelText: "Confirmer Mot de passe",
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => {},
+                      onTap: () async {
+                        if (_formKey.currentState!.validate()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Processing Data')),
+                          );
+                        }
+                        await onSingnUp();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AccueilPage(),
+                          ),
+                        );
+                      },
                       child: Container(
                           alignment: Alignment.center,
-                          margin: const EdgeInsets.only(top: 10, bottom: 10),
+                          margin: const EdgeInsets.only(top: 20, bottom: 10),
                           width: double.infinity,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
@@ -113,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: const Padding(
                             padding: EdgeInsets.all(12.0),
                             child: Text(
-                              "Sign up",
+                              "S'inscrire",
                               style: TextStyle(color: Colors.white),
                             ),
                           )),
@@ -134,13 +229,13 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   const Text(
-                    "Already a member ?",
+                    "Déjà inscris ?",
                     style: TextStyle(color: Color.fromARGB(150, 255, 255, 255)),
                   ),
                   TextButton(
                       onPressed: () {},
                       child: const Text(
-                        "Sign in",
+                        "Connectez-vous",
                         style: TextStyle(
                             color: Colors.white,
                             decoration: TextDecoration.underline,

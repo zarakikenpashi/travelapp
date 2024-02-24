@@ -18,13 +18,11 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
   bool isLoaded = true;
 
   Future<void> getPlaces() async {
-    print("Get Places");
     try {
       var response = await http.get(Uri.parse(
           'http://192.168.1.68/tourisme_journey_api/villes/getVilles.php'));
       print(response.body);
       var decodedResponse = jsonDecode(response.body);
-      print(decodedResponse);
 
       if (decodedResponse['status'] == "success") {
         for (var element in decodedResponse['data']) {
@@ -108,11 +106,13 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailYakroPage(
-                                            lieuId: ListLieux![index].id,
-                                          )));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailYakroPage(
+                                    lieuId: ListLieux![index].id,
+                                  ),
+                                ),
+                              );
                             },
                             child: Stack(
                               children: [

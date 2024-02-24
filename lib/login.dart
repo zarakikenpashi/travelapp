@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'sgnup.dart';
+import 'package:toastification/toastification.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,6 +13,24 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  Future<void> onSingnIn() async {
+    final url = Uri.parse(
+        'http://192.168.1.74/tourisme_journey_api/Connexion/login.php'); //Repclace Your Endpoint
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode(
+        {"email": emailController.text, "password": passwordController.text});
+    final response = await http.post(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      _formKey.currentState!.reset();
+    } else {
+      print('Hata: ${response.statusCode}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,13 +64,14 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const Text(
-                      "Sign in",
+                      "Connexion",
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                   ],
                 ),
               ),
               Form(
+                key: _formKey,
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: const BoxDecoration(
@@ -59,21 +81,35 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       const Center(
                         child: Text(
-                          "Sign in",
+                          "Connexion",
                           style: TextStyle(
                             fontSize: 30,
                           ),
                         ),
                       ),
                       TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Veuillez entrer votre email';
+                          }
+                          return null;
+                        },
+                        controller: emailController,
                         decoration: const InputDecoration(
-                          labelText: "Username",
+                          labelText: "Adresse email",
                         ),
                       ),
                       const SizedBox(
                         height: 30,
                       ),
                       TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Veuillez entrer votre mot de passe';
+                          }
+                          return null;
+                        },
+                        controller: passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
                           labelText: "Password",
@@ -86,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            "Keep me logged in",
+                            "Rester connecté",
                             style:
                                 TextStyle(color: Color.fromARGB(72, 0, 0, 0)),
                           ),
@@ -142,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: const Padding(
                               padding: EdgeInsets.all(12.0),
                               child: Text(
-                                "Login",
+                                "Connexion",
                                 style: TextStyle(color: Colors.white),
                               ),
                             )),
@@ -151,7 +187,21 @@ class _LoginPageState extends State<LoginPage> {
                         height: 10,
                       ),
                       GestureDetector(
-                        onTap: () => {},
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Connexion encours...')),
+                            );
+                          }
+                          await onSingnIn();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AccueilPage(),
+                            ),
+                          );
+                        },
                         child: Container(
                             alignment: Alignment.center,
                             width: double.infinity,
@@ -167,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: const Padding(
                               padding: EdgeInsets.all(12.0),
                               child: Text(
-                                "With Google",
+                                "Connexion Google",
                                 style: TextStyle(color: Colors.white),
                               ),
                             )),
@@ -188,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const Text(
-                      "Not a user",
+                      "Pas de compte ?",
                       style:
                           TextStyle(color: Color.fromARGB(150, 255, 255, 255)),
                     ),
@@ -200,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
                                   builder: (context) => const SignUpPage()));
                         },
                         child: const Text(
-                          "Sign up",
+                          "Inscrivez-vous",
                           style: TextStyle(
                               color: Colors.white,
                               decoration: TextDecoration.underline,

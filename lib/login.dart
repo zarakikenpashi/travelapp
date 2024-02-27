@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'sgnup.dart';
-import 'package:toastification/toastification.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -19,15 +18,29 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> onSingnIn() async {
     final url = Uri.parse(
-        'http://192.168.1.74/tourisme_journey_api/Connexion/login.php'); //Repclace Your Endpoint
+        'http://192.168.1.89/tourisme_journey_api/Connexion/login.php'); //Repclace Your Endpoint
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(
         {"email": emailController.text, "password": passwordController.text});
     final response = await http.post(url, headers: headers, body: body);
+    var decodedResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      _formKey.currentState!.reset();
+      if (decodedResponse['status'] == "success") {
+        _formKey.currentState!.reset();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AccueilPage(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("${decodedResponse['msg']}")),
+        );
+      }
     } else {
       print('Hata: ${response.statusCode}');
+      print("Erreur 2");
     }
   }
 
@@ -157,31 +170,34 @@ class _LoginPageState extends State<LoginPage> {
                         height: 30,
                       ),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const AccueilPage()));
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Processing Data')),
+                            );
+                          }
+                          await onSingnIn();
                         },
                         child: Container(
-                            alignment: Alignment.center,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                gradient: const LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color.fromARGB(255, 255, 125, 126),
-                                      Color.fromARGB(255, 236, 38, 125)
-                                    ])),
-                            child: const Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: Text(
-                                "Connexion",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )),
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color.fromARGB(255, 255, 125, 126),
+                                    Color.fromARGB(255, 236, 38, 125)
+                                  ])),
+                          child: const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: Text(
+                              "Connexion",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
                       ),
                       const Divider(
                         height: 10,
@@ -195,12 +211,6 @@ class _LoginPageState extends State<LoginPage> {
                             );
                           }
                           await onSingnIn();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AccueilPage(),
-                            ),
-                          );
                         },
                         child: Container(
                             alignment: Alignment.center,

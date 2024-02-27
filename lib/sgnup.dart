@@ -22,9 +22,8 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController confirmpasswordController = TextEditingController();
 
   Future<void> onSingnUp() async {
-    print("Top");
     final url = Uri.parse(
-        'http://192.168.1.74/tourisme_journey_api/Connexion/register.php'); //Repclace Your Endpoint
+        'http://192.168.1.89/tourisme_journey_api/Connexion/register.php'); //Repclace Your Endpoint
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "firstName": nomController.text,
@@ -34,7 +33,7 @@ class _SignUpPageState extends State<SignUpPage> {
       "password": passwordController.text
     });
 
-    var response = await http.post(url, headers: headers, body: body);
+    final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
       _formKey.currentState!.reset();
       toastification.show(

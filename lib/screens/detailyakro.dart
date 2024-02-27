@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:travelapp/models/activite.dart';
 import 'package:travelapp/models/hotel.dart';
 import 'package:travelapp/models/photo.dart';
+import 'package:travelapp/screens/lieumap.dart';
 import '../models/lieu.dart';
 import 'dart:convert';
 import 'package:toastification/toastification.dart';
@@ -27,7 +28,7 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
   Future<void> getPlaces(int? id) async {
     try {
       var response = await http.get(Uri.parse(
-          'http://192.168.1.68/tourisme_journey_api/villes/getVilleById.php?id=$id'));
+          'http://192.168.1.89/tourisme_journey_api/villes/getVilleById.php?id=$id'));
 
       var decodedResponse = jsonDecode(response.body);
 
@@ -52,13 +53,8 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
           autoCloseDuration: const Duration(seconds: 5),
         );
       }
-
-      print("Response");
     } catch (e) {
       print("Erreur: $e");
-    } finally {
-      print("Finally");
-      //http.close();
     }
   }
 
@@ -176,17 +172,41 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
 
                         itemCount: ListHotels!.length, // total number of items
                         itemBuilder: (context, index) {
-                          return Container(
-                            padding: EdgeInsets.all(10),
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: Column(
-                              children: [
-                                Container(
-                                  child: Image.asset(
-                                      "assets/images/parlementaire.jpg"),
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LieuMap(
+                                    data: {
+                                      "longitude": ListHotels![index].longitude,
+                                      "latitude": ListHotels![index].latitude,
+                                      "email": ListHotels![index].email,
+                                      "tel_responsable":
+                                          ListHotels![index].tel_responsable,
+                                      "image_hotel":
+                                          ListHotels![index].image_hotel,
+                                      "bref_description":
+                                          ListHotels![index].bref_description,
+                                      "description_complete": ListHotels![index]
+                                          .description_complete,
+                                    },
+                                  ),
                                 ),
-                                Text("${ListHotels![index].nom_hotel}"),
-                              ],
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Image.asset(
+                                        "assets/images/parlementaire.jpg"),
+                                  ),
+                                  Text("${ListHotels![index].nom_hotel}"),
+                                ],
+                              ),
                             ),
                           );
                         },

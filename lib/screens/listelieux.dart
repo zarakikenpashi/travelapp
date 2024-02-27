@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import '../models/lieu.dart';
 import 'detailyakro.dart';
 import 'package:toastification/toastification.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListeLieuxPage extends StatefulWidget {
   const ListeLieuxPage({super.key});
@@ -17,10 +19,43 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
   List<ModelLieux>? ListLieux = [];
   bool isLoaded = true;
 
+  late SharedPreferences prefs;
+  late double userLatitude;
+  late double userLongitude;
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position coordonnees = await Geolocator.getCurrentPosition();
+    userLatitude = coordonnees.latitude;
+    userLongitude = coordonnees.longitude;
+
+    return await Geolocator.getCurrentPosition();
+  }
+
   Future<void> getPlaces() async {
     try {
       var response = await http.get(Uri.parse(
-          'http://192.168.1.68/tourisme_journey_api/villes/getVilles.php'));
+          'http://192.168.1.89/tourisme_journey_api/villes/getVilles.php'));
       print(response.body);
       var decodedResponse = jsonDecode(response.body);
 
@@ -45,20 +80,20 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
       print("Response");
     } catch (e) {
       print("Erreur: $e");
-    } finally {
-      print("Finally");
-      //http.close();
     }
   }
 
   Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+    await _determinePosition();
     await getPlaces();
+    await prefs.setDouble('latitude', userLatitude);
+    await prefs.setDouble('longitude', userLongitude);
   }
 
   @override
   void initState() {
     init();
-    // TODO: implement initState
     super.initState();
   }
 

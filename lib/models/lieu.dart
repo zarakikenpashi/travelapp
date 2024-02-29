@@ -6,7 +6,7 @@ class ModelLieux {
   String? latitude;
   String? longitude;
   String? temperature;
-  String? photoUrl;
+  String? photo_url;
 
   ModelLieux({
     this.id,
@@ -16,7 +16,7 @@ class ModelLieux {
     this.latitude,
     this.longitude,
     this.temperature,
-    this.photoUrl,
+    this.photo_url,
   });
 
   factory ModelLieux.fromJson(Map<String, dynamic> json) {
@@ -28,7 +28,7 @@ class ModelLieux {
       latitude: json['latitude'],
       longitude: json['longitude'],
       temperature: json['temperature'],
-      photoUrl: json['photoUrl'],
+      photo_url: json['photo_url'],
     );
   }
 
@@ -41,7 +41,7 @@ class ModelLieux {
       'latitude': latitude,
       'longitude': longitude,
       'temperature': temperature,
-      'photoUrl': photoUrl,
+      'photo_url': photo_url,
     };
   }
 }

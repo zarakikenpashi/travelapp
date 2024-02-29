@@ -55,8 +55,7 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
   Future<void> getPlaces() async {
     try {
       var response = await http.get(Uri.parse(
-          'http://192.168.1.89/tourisme_journey_api/villes/getVilles.php'));
-      print(response.body);
+          'http://192.168.1.16/tourisme_journey_api/villes/getVilles.php'));
       var decodedResponse = jsonDecode(response.body);
 
       if (decodedResponse['status'] == "success") {
@@ -64,7 +63,6 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
           ListLieux!.add(ModelLieux.fromJson(element));
         }
         if (ListLieux != null) {
-          print("Condition Is Loaded");
           setState(() {
             isLoaded = false;
           });
@@ -76,8 +74,6 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
           autoCloseDuration: const Duration(seconds: 5),
         );
       }
-
-      print("Response");
     } catch (e) {
       print("Erreur: $e");
     }
@@ -112,8 +108,8 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  child: const Column(
-                      children: [Text("Bookings"), Text("72 ITEMS")]),
+                  child:
+                      const Column(children: [Text("Lieux"), Text("72 ITEMS")]),
                 ),
                 Container(
                   padding: const EdgeInsets.all(7),
@@ -159,16 +155,14 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     image: DecorationImage(
-                                        image: AssetImage(
-                                            "assets/images/yakro.jpg"),
-
-                                        // CachedNetworkImageProvider(
-                                        //     "${ListLieux![index].photoUrl}"),
+                                        image: CachedNetworkImageProvider(
+                                            "${ListLieux![index].photo_url}"),
                                         fit: BoxFit.cover),
                                   ),
                                 ),
                                 Positioned(
                                   bottom: 50,
+                                  left: 20,
                                   child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -281,124 +275,6 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
                                 ),
                               ],
                             ),
-
-                            /*Container(
-                              width: double.infinity,
-                              height: 250,
-                              margin: EdgeInsets.symmetric(vertical: 20),
-                              padding: EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                    image:
-                                        AssetImage("assets/images/yakro.jpg"),
-
-                                    // CachedNetworkImageProvider(
-                                    //     "${ListLieux![index].photoUrl}"),
-                                    fit: BoxFit.cover),
-                              ),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: 250,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "${ListLieux![index].nom}",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20),
-                                              ),
-                                              Text(
-                                                "${ListLieux![index].description}",
-                                                maxLines: 3,
-                                                style: TextStyle(
-                                                    color: Color.fromARGB(
-                                                        255, 255, 255, 255),
-                                                    overflow:
-                                                        TextOverflow.clip),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.more_vert,
-                                          size: 30,
-                                          color: Colors.white,
-                                        )
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.sunny,
-                                          color: Colors.white,
-                                          size: 35,
-                                        ),
-                                        Column(
-                                          children: [
-                                            Text(
-                                                "${ListLieux![index].temperature}",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                )),
-                                            Text(
-                                              double.parse(
-                                                          "${ListLieux![index].temperature}") >
-                                                      0
-                                                  ? "Sunny"
-                                                  : "cloudy",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            )
-                                          ],
-                                        ),
-                                        Expanded(
-                                            child: Column(
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 10, right: 10),
-                                              height: 5,
-                                              color: Colors.white,
-                                            ),
-                                            const Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Icon(
-                                                  Icons
-                                                      .favorite_border_outlined,
-                                                  color: Colors.white,
-                                                  size: 25,
-                                                ),
-                                                Text("4k",
-                                                    style: TextStyle(
-                                                        color: Colors.white)),
-                                                Icon(
-                                                    Icons
-                                                        .chat_bubble_outline_outlined,
-                                                    color: Colors.white)
-                                              ],
-                                            ),
-                                          ],
-                                        ))
-                                      ],
-                                    )
-                                  ]),
-                            ),*/
                           );
                         })),
                   )

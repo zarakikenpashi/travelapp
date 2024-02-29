@@ -18,11 +18,13 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> onSingnIn() async {
     final url = Uri.parse(
-        'http://192.168.1.89/tourisme_journey_api/Connexion/login.php'); //Repclace Your Endpoint
+        'http://192.168.1.16/tourisme_journey_api/Connexion/login.php'); //Repclace Your Endpoint
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(
         {"email": emailController.text, "password": passwordController.text});
+
     final response = await http.post(url, headers: headers, body: body);
+
     var decodedResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
       if (decodedResponse['status'] == "success") {
@@ -40,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     } else {
       print('Hata: ${response.statusCode}');
-      print("Erreur 2");
     }
   }
 
@@ -176,6 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                               const SnackBar(content: Text('Processing Data')),
                             );
                           }
+                          print('Hello');
                           await onSingnIn();
                         },
                         child: Container(
@@ -203,15 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 10,
                       ),
                       GestureDetector(
-                        onTap: () async {
-                          if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Connexion encours...')),
-                            );
-                          }
-                          await onSingnIn();
-                        },
+                        onTap: () {},
                         child: Container(
                             alignment: Alignment.center,
                             width: double.infinity,

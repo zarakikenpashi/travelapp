@@ -11,15 +11,15 @@ const double CAMERA_ZOOM = 13;
 const double CAMERA_TILT = 0;
 const double CAMERA_BEARING = 30;
 
-class LieuMap extends StatefulWidget {
-  const LieuMap({super.key, required this.data});
+class ActiviteMap extends StatefulWidget {
+  const ActiviteMap({super.key, required this.data});
   final Map<String, dynamic>? data;
 
   @override
-  State<LieuMap> createState() => _LieuMapState();
+  State<ActiviteMap> createState() => _ActiviteMapState();
 }
 
-class _LieuMapState extends State<LieuMap> {
+class _ActiviteMapState extends State<ActiviteMap> {
   Completer<GoogleMapController> _controller = Completer();
   Set<Marker> _markers = {};
   Set<Polyline> _polylines = {};
@@ -42,7 +42,9 @@ class _LieuMapState extends State<LieuMap> {
     latitude = prefs.getDouble('latitude')!;
     longitude = prefs.getDouble('longitude')!;
     SOURCE_LOCATION = LatLng(latitude, longitude);
-    DEST_LOCATION = LatLng(widget.data!['latitude'], widget.data!['longitude']);
+    DEST_LOCATION = LatLng(5.343924, -4.0645722);
+
+    print("activités map");
   }
 
   @override
@@ -123,6 +125,7 @@ class _LieuMapState extends State<LieuMap> {
       body: Column(
         children: [
           Container(
+            width: 500,
             height: 300,
             child: GoogleMap(
                 myLocationEnabled: true,
@@ -136,7 +139,7 @@ class _LieuMapState extends State<LieuMap> {
           ),
           Expanded(
             child: Container(
-              color: Colors.white,
+              width: 500,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -169,7 +172,7 @@ class _LieuMapState extends State<LieuMap> {
                     ]),
                     Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -181,7 +184,7 @@ class _LieuMapState extends State<LieuMap> {
                         ],
                       ),
                     ),
-                    Divider(height: 5, color: Colors.grey),
+                    Divider(height: 10, color: Colors.grey),
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -190,7 +193,7 @@ class _LieuMapState extends State<LieuMap> {
                         children: [
                           Text("Adresse"),
                           Text(
-                            "${currentData['adresse']}",
+                            "1519 Taylor Street, New York NYC 10011, United States",
                             style: TextStyle(fontSize: 20),
                             maxLines: 3,
                           ),
@@ -229,7 +232,7 @@ class _LieuMapState extends State<LieuMap> {
                     )
                   ]),
             ),
-          ),
+          )
         ],
       ),
     );

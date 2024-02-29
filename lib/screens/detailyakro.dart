@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:travelapp/models/activite.dart';
 import 'package:travelapp/models/hotel.dart';
 import 'package:travelapp/models/photo.dart';
+import 'package:travelapp/screens/activitemap.dart';
 import 'package:travelapp/screens/lieumap.dart';
 import '../models/lieu.dart';
 import 'dart:convert';
@@ -22,13 +24,14 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
   List<PhotoModel>? ListPhotos = [];
   List<ActiviteModel>? ListActivites = [];
   bool isLoaded = true;
+  int nb_hotel = 0;
 
   get lieuId => null;
 
   Future<void> getPlaces(int? id) async {
     try {
       var response = await http.get(Uri.parse(
-          'http://192.168.1.89/tourisme_journey_api/villes/getVilleById.php?id=$id'));
+          'http://192.168.1.16/tourisme_journey_api/villes/getVilleById.php?id=$id'));
 
       var decodedResponse = jsonDecode(response.body);
 
@@ -38,8 +41,11 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
         });
 
         for (var element in decodedResponse['data']['hotels']) {
-          ListHotels!.add(HotelModel.fromJson(element));
+          setState(() {
+            ListHotels!.add(HotelModel.fromJson(element));
+          });
         }
+
         for (var element in decodedResponse['data']['activities']) {
           ListActivites!.add(ActiviteModel.fromJson(element));
         }
@@ -108,8 +114,9 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
                             height: 250,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                  image: AssetImage("assets/images/yakro.jpg"),
+                              image: DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                      "${lieu!.photo_url}"),
                                   fit: BoxFit.cover),
                             ),
                             child: Column(
@@ -186,8 +193,10 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
                                           ListHotels![index].tel_responsable,
                                       "image_hotel":
                                           ListHotels![index].image_hotel,
+                                      "nom_hotel": ListHotels![index].nom_hotel,
                                       "bref_description":
                                           ListHotels![index].bref_description,
+                                      "adresse": ListHotels![index].adresse,
                                       "description_complete": ListHotels![index]
                                           .description_complete,
                                     },
@@ -196,14 +205,13 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
                               );
                             },
                             child: Container(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.all(5),
                               width: MediaQuery.of(context).size.width * 0.5,
                               child: Column(
                                 children: [
                                   Container(
-                                    child: Image.asset(
-                                        "assets/images/parlementaire.jpg"),
-                                  ),
+                                      child: Image.network(
+                                          "${ListHotels![index].image_hotel}")),
                                   Text("${ListHotels![index].nom_hotel}"),
                                 ],
                               ),
@@ -226,8 +234,9 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
                             height: 250,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                  image: AssetImage("assets/images/yakro.jpg"),
+                              image: DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                      "${lieu!.photo_url}"),
                                   fit: BoxFit.cover),
                             ),
                             child: Column(
@@ -291,17 +300,44 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
                         itemCount:
                             ListActivites!.length, // total number of items
                         itemBuilder: (context, index) {
-                          return Container(
-                            padding: EdgeInsets.all(10),
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            child: Column(
-                              children: [
-                                Container(
-                                  child: Image.asset(
-                                      "assets/images/parlementaire.jpg"),
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ActiviteMap(
+                                    data: {
+                                      "longitude":
+                                          ListActivites![index].longitude,
+                                      "latitude":
+                                          ListActivites![index].latitude,
+                                      "email": ListActivites![index].email,
+                                      "tel_responsable":
+                                          ListActivites![index].tel_responsable,
+                                      "image_hotel":
+                                          ListActivites![index].image_activite,
+                                      "bref_description": ListActivites![index]
+                                          .bref_description,
+                                      "description_complete":
+                                          ListActivites![index]
+                                              .description_complete,
+                                    },
+                                  ),
                                 ),
-                                Text("${ListActivites![index].nom_activite}"),
-                              ],
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Image.network(
+                                        "${ListActivites![index].image_activite}"),
+                                  ),
+                                  Text("${ListActivites![index].nom_activite}"),
+                                ],
+                              ),
                             ),
                           );
                         },

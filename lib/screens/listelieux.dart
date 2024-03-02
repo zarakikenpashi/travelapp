@@ -278,11 +278,21 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
                           );
                         })),
                   )
-                : Column(
-                    children: [
-                      CircularProgressIndicator(),
-                      Text("Chargement des villes en cours ...")
-                    ],
+                : Expanded(
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        return Container(
+                          height: 200,
+                          margin: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: Color.fromARGB(227, 228, 219, 219)),
+                          alignment: Alignment.center,
+                          child: Text("chargement..."),
+                        );
+                      },
+                    ),
                   ),
             SizedBox(
               height: 150,

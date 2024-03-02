@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:travelapp/models/utilisateurModel.dart';
 import 'home.dart';
 import 'sgnup.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +14,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  late SharedPreferences prefs;
+  late UtilisateurModel utilisateur;
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -29,6 +34,8 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       if (decodedResponse['status'] == "success") {
         _formKey.currentState!.reset();
+        utilisateur = UtilisateurModel.fromJson(decodedResponse['data']);
+        prefs.setString("user", jsonEncode(utilisateur));
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -43,6 +50,16 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       print('Hata: ${response.statusCode}');
     }
+  }
+
+  Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  @override
+  void initState() {
+    init();
+    super.initState();
   }
 
   @override

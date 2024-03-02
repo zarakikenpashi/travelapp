@@ -31,7 +31,7 @@ class _DetailYakroPageState extends State<DetailYakroPage> {
   Future<void> getPlaces(int? id) async {
     try {
       var response = await http.get(Uri.parse(
-          'http://192.168.1.16/tourisme_journey_api/villes/getVilleById.php?id=$id'));
+          'https://hellostartup.000webhostapp.com/villes/getVilleById.php?id=$id'));
 
       var decodedResponse = jsonDecode(response.body);
 

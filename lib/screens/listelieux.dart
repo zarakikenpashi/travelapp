@@ -55,7 +55,7 @@ class _ListeLieuxPageState extends State<ListeLieuxPage> {
   Future<void> getPlaces() async {
     try {
       var response = await http.get(Uri.parse(
-          'http://192.168.1.16/tourisme_journey_api/villes/getVilles.php'));
+          'https://hellostartup.000webhostapp.com/villes/getVilles.php'));
       var decodedResponse = jsonDecode(response.body);
 
       if (decodedResponse['status'] == "success") {

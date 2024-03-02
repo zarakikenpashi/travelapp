@@ -23,7 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> onSingnUp() async {
     final url = Uri.parse(
-        'http://192.168.1.16/tourisme_journey_api/Connexion/register.php'); //Repclace Your Endpoint
+        'https://hellostartup.000webhostapp.com/Connexion/register.php'); //Repclace Your Endpoint
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "firstName": nomController.text,

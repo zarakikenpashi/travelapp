@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:travelapp/home.dart';
 
 import 'login.dart';
 import 'sgnup.dart';
@@ -16,6 +17,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('user') != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AccueilPage(),
+        ),
+      );
+    }
   }
 
   @override

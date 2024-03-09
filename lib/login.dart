@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:travelapp/models/utilisateurModel.dart';
+import 'package:travelapp/otp.dart';
 import 'home.dart';
 import 'sgnup.dart';
 import 'dart:convert';
@@ -19,14 +22,16 @@ class _LoginPageState extends State<LoginPage> {
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  late String? accoumptName;
+  late String? accoumptEmail;
 
   Future<void> onSingnIn() async {
     final url = Uri.parse(
         'https://hellostartup.000webhostapp.com/Connexion/login.php'); //Repclace Your Endpoint
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode(
-        {"email": emailController.text, "password": passwordController.text});
+        {"email": emailController.text, "password": phoneController.text});
 
     final response = await http.post(url, headers: headers, body: body);
 
@@ -54,6 +59,23 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
+  }
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'openid',
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+  Future<void> _handleSignIn() async {
+    try {
+      final googleAccoumpt = await _googleSignIn.signIn();
+      accoumptName = googleAccoumpt!.displayName;
+      accoumptEmail = googleAccoumpt.email;
+    } catch (error) {
+      //print(error);
+    }
   }
 
   @override
@@ -118,33 +140,21 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Veuillez entrer votre email';
-                          }
-                          return null;
-                        },
-                        controller: emailController,
-                        decoration: const InputDecoration(
-                          labelText: "Adresse email",
-                        ),
-                      ),
                       const SizedBox(
                         height: 30,
                       ),
-                      TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Veuillez entrer votre mot de passe';
-                          }
-                          return null;
-                        },
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: "Password",
+                      IntlPhoneField(
+                        controller: phoneController,
+                        decoration: InputDecoration(
+                          labelText: 'Telephone',
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
                         ),
+                        initialCountryCode: 'CI',
+                        onChanged: (phone) {
+                          print(phone.completeNumber);
+                        },
                       ),
                       const SizedBox(
                         height: 30,
@@ -222,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 10,
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () => {_handleSignIn()},
                         child: Container(
                             alignment: Alignment.center,
                             width: double.infinity,
@@ -268,7 +278,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SignUpPage()));
+                                  builder: (context) => const OtpPage()));
                         },
                         child: const Text(
                           "Inscrivez-vous",

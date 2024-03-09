@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "98728176744",
+    "project_id": "tourisme-flutter",
+    "storage_bucket": "tourisme-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98728176744:android:04ed9247e59fe8c7fe9fdd",
+        "android_client_info": {
+          "package_name": "com.example.travel_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "98728176744-caglofu4ors10041u5bfi4ujrvc04imh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkD-BH_hqq-8m1FJhgAvBJh28UI78Uj7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "98728176744-caglofu4ors10041u5bfi4ujrvc04imh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "98728176744-2873cirs4fm35ba9n74lmdbnufv0dn0d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.travelApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98728176744:android:016546314b2744adfe9fdd",
+        "android_client_info": {
+          "package_name": "com.example.travelapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "98728176744-caglofu4ors10041u5bfi4ujrvc04imh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkD-BH_hqq-8m1FJhgAvBJh28UI78Uj7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "98728176744-caglofu4ors10041u5bfi4ujrvc04imh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "98728176744-2873cirs4fm35ba9n74lmdbnufv0dn0d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.travelApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

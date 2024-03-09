@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 import 'home.dart';
+import 'login.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -15,11 +17,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController nomController = TextEditingController();
-  TextEditingController prenomController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmpasswordController = TextEditingController();
 
   Future<void> onSingnUp() async {
     final url = Uri.parse(
@@ -27,10 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({
       "firstName": nomController.text,
-      "lastName": prenomController.text,
       "phone": phoneController.text,
-      "email": emailController.text,
-      "password": passwordController.text
     });
 
     final response = await http.post(url, headers: headers, body: body);
@@ -51,6 +46,8 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       body: SingleChildScrollView(
           child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -62,7 +59,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(50),
+              padding: const EdgeInsets.all(70),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -109,72 +106,24 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                       controller: nomController,
                       decoration: InputDecoration(
-                        labelText: "Nom",
+                        labelText: "Nom et Prénoms",
                       ),
                     ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Veuillez entrer votre prénoms';
-                        }
-                        return null;
-                      },
-                      controller: prenomController,
-                      decoration: InputDecoration(
-                        labelText: "Prenoms",
-                      ),
+                    const SizedBox(
+                      height: 30,
                     ),
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Veuillez entrer votre email';
-                        }
-                        return null;
-                      },
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        labelText: "Adresse email",
-                      ),
-                    ),
-                    TextFormField(
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Veuillez entrer votre numero';
-                        }
-                        return null;
-                      },
+                    IntlPhoneField(
                       controller: phoneController,
                       decoration: InputDecoration(
-                        labelText: "Telephone",
+                        labelText: 'Telephone',
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
                       ),
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Veuillez entrer votre mot de passe';
-                        }
-                        return null;
+                      initialCountryCode: 'CI',
+                      onChanged: (phone) {
+                        print(phone.completeNumber);
                       },
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: "Mot de passe",
-                      ),
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Veuillez entrer repeter le mot de passe';
-                        }
-                        return null;
-                      },
-                      controller: confirmpasswordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: "Confirmer Mot de passe",
-                      ),
                     ),
                     GestureDetector(
                       onTap: () async {
@@ -211,7 +160,32 @@ class _SignUpPageState extends State<SignUpPage> {
                               style: TextStyle(color: Colors.white),
                             ),
                           )),
-                    )
+                    ),
+                    const Divider(
+                      height: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                          alignment: Alignment.center,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              gradient: const LinearGradient(
+                                  begin: Alignment.bottomRight,
+                                  end: Alignment.topLeft,
+                                  colors: [
+                                    Color.fromARGB(255, 255, 125, 126),
+                                    Color.fromARGB(255, 236, 38, 125)
+                                  ])),
+                          child: const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: Text(
+                              "Connexion Google",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )),
+                    ),
                   ],
                 ),
               ),
@@ -232,7 +206,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     style: TextStyle(color: Color.fromARGB(150, 255, 255, 255)),
                   ),
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
+                      },
                       child: const Text(
                         "Connectez-vous",
                         style: TextStyle(

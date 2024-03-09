@@ -46,6 +46,11 @@ dependencies:
   maps_launcher: ^2.2.1
   shimmer: ^3.0.0
   flutter_launcher_icons: ^0.13.1
+  intl_phone_field: ^3.2.0
+  pinput: ^4.0.0
+  firebase_core: ^2.24.2
+  google_sign_in: ^6.2.1
+  firebase_auth: ^4.16.0
 
 dev_dependencies:
   flutter_test:
